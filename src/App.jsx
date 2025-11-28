@@ -69,7 +69,7 @@ function GamePanel({ title, videoSrc, onClick }) {
     >
       <video className="panel-video" src={videoSrc} muted loop playsInline preload="metadata" />
       <div className="panel-overlay">
-        <h2>{title}</h2>
+        <h2 className={title === 'Dos Personajes' ? 'white-title' : ''}>{title}</h2>
         <p className="panel-hint">Hover para previsualizar · Click para entrar</p>
       </div>
     </div>
