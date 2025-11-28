@@ -17,6 +17,7 @@ function Game2() {
     r2: { x: 16, y: 50 }
   });
   const [score, setScore] = useState({ r1: 0, r2: 0 });
+  const [winner, setWinner] = useState(null); // 1 o 2
   const [coins, setCoins] = useState({
     lane1: [
       { id: 'c1', x: 430, y: 70, used: false }
@@ -72,8 +73,7 @@ function Game2() {
 
       // victoria
       if (newPos.x > laneWidth - 100) {
-        alert(`GANA JUGADOR ${turno}`);
-        resetJuego();
+        manejarVictoria(turno === 1 ? 'r1' : 'r2');
         return;
       }
     }
@@ -94,6 +94,7 @@ function Game2() {
       lane2: [ { id: 'c2', x: 480, y: 70, used: false } ]
     });
     setIsRunning(false);
+    setWinner(null);
   }
 
   function getMetaX(laneRef) {
@@ -124,10 +125,25 @@ function Game2() {
     obstacles[laneKey].forEach(o => {
       const metaRect = { x: metaX, y: o.y, w: o.w, h: o.h };
       if (rectOverlap(robotRect, metaRect)) {
-        alert(`GANA JUGADOR ${id === 'r1' ? 1 : 2}`);
-        resetJuego();
+        manejarVictoria(id);
       }
     });
+  }
+
+  function manejarVictoria(robotId) {
+    // Sumar 1 punto al ganador
+    setScore(s => ({ ...s, [robotId]: s[robotId] + 1 }));
+    setWinner(robotId === 'r1' ? 1 : 2);
+    // Reiniciar solo posiciones y secuencia; mantener puntuación acumulada
+    setPos({ r1: { x: 16, y: 50 }, r2: { x: 16, y: 50 } });
+    setSeq([]);
+    // Reponer monedas para nueva ronda
+    setCoins({
+      lane1: [ { id: 'c1', x: 430, y: 70, used: false } ],
+      lane2: [ { id: 'c2', x: 480, y: 70, used: false } ]
+    });
+    setIsRunning(false);
+    setTurno(1); // vuelve a iniciar en jugador 1
   }
 
   return (
@@ -167,6 +183,10 @@ function Game2() {
         <div className="panel-control">
           <h2>Carrera Robots</h2>
             <div className="turno">Turno: Jugador {turno}</div>
+            <div className="ganador">{winner && (
+              <span>
+                Ganador: J{winner}              </span>
+            )}</div>
             <div className="btn-group">
               <button className="avanzar" onClick={() => add('right')} disabled={isRunning}>➡ DERECHA</button>
               <button className="retro" onClick={() => add('left')} disabled={isRunning}>⬅ IZQUIERDA</button>
