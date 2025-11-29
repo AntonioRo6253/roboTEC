@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import FiguraContenedora from './FiguraContenedora';
+import FiguraContenedora from './components/FiguraContenedora.jsx';
 import { icons } from './assets/icons.js';
 import './game.css';
 

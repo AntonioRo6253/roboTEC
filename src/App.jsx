@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import Game from './Game.jsx';
-import Game2 from './Game2.jsx';
 import './menu.css';
 
 function App() {
@@ -30,16 +29,34 @@ function App() {
 
   return (
     <div className="menu-container">
+      {/* Logo centrado con enlace a GitHub */}
+      <a
+        href="https://github.com/AntonioRo6253/roboTEC"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="center-logo-link"
+        aria-label="Ir al repositorio en GitHub"
+      >
+        <img src="/github.svg" alt="Logo" className="center-logo" />
+        <span
+          className="center-logo-hint"
+          data-default="Explorar Repositorio"
+          data-hover="Explorar Repositorio"
+        />
+      </a>
       <div className="menu-grid">
         <GamePanel
           title="Normal"
-          videoSrc="/game1.mp4"
+          videoSrc="/video/game1.mp4"
           onClick={() => setSelectedGame('game1')}
         />
         <GamePanel
-          title="Dos Personajes"
-          videoSrc="/game2.mp4"
-          onClick={() => setSelectedGame('game2')}
+          title={<>Dos<br/>Jugadores</>}
+          videoSrc="/video/game2.mp4"
+          onClick={() => {
+            // Redirige al archivo estático movido a public
+            window.location.href = '/Game2.html';
+          }}
         />
       </div>
     </div>

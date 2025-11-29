@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { icons } from './assets/icons.js';
-import './game.css';
+import { icons } from '../assets/icons.js';
+import '../game.css';
 
 // Figura que puede contener hasta 4 bloques y permite quitar bloques internos y la figura misma
 function FiguraContenedora({ onRemove, id, onAddInternal, contents = [], onRemoveInternal }) {

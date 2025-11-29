@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+   <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  <title>Carrera Robots — Dos Jugadores</title>
+  <!-- Archivo movido desde src/juego (1).html y renombrado a juego2.html -->
+  <style>
+    /* Reset fuerte para aislar de estilos globales de la app React */
+    :root, html, body {
+      all: initial;
+    }
+    html { display: block; }
+    body { display: block; }
+
+    :root {
+      --bg: #061826;
+      --panel: #051d2a;
+      --accent: #4dabf7;
+      --muted: #b9f6ca;
+      --neon-a: #69d2ff;
+      --neon-b: #8aff9d;
+      --danger: #e53935;
+      --coin: gold;
+      --glass: rgba(255, 255, 255, 0.03);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(10, 30, 40, 0.18), transparent 8%),
+        linear-gradient(180deg, #03161f 0%, var(--bg) 100%);
+      margin: 0;
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e6f6f4;
+    }
+
+    #juego {
+      width: 1400px;
+      max-width: 95vw;
+      height: 740px;
+      background: linear-gradient(180deg, #062a36, #092f3f);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    #pista {
+      width: 68%;
+      background: linear-gradient(180deg, #05202a, #08313a);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lane {
+      background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0 6px, transparent 6px 24px), linear-gradient(180deg, #062233, #05202a);
+      border-radius: 12px;
+      height: 300px;
+      position: relative;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .6), inset 0 -6px 30px rgba(0, 0, 0, .2);
+      overflow: hidden;
+    }
+
+    .lane .mark {
+      position: absolute;
+      left: 0;
+      right: 60px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 6px;
+    }
+
+    .lane::after {
+      content: "META";
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      bottom: 10px;
+      width: 28px;
+      background: repeating-linear-gradient(180deg, #ffffff 0px, #ffffff 6px, #ff2d2d 6px, #ff2d2d 12px);
+      color: white;
+      font-weight: 900;
+      font-size: 12px;
+      writing-mode: vertical-lr;
+      text-orientation: upright;
+      letter-spacing: 2px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      box-shadow: 0 0 18px rgba(255, 50, 50, .8), inset 0 0 12px rgba(255, 255, 255, .5);
+      animation: metaGlow 1s infinite alternate;
+    }
+
+    @keyframes metaGlow {
+      from {
+        box-shadow: 0 0 12px rgba(255, 50, 50, .6);
+      }
+
+      to {
+        box-shadow: 0 0 28px rgba(255, 90, 90, 1);
+      }
+    }
+
+    .robot {
+      width: 76px;
+      height: 76px;
+      border-radius: 12px;
+      position: absolute;
+      left: 18px;
+      top: calc(50% - 38px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      cursor: default;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .6), 0 0 18px rgba(0, 0, 0, .35);
+      transition: box-shadow .18s, transform .12s, left .12s, top .12s;
+      user-select: none;
+    }
+
+    .robot::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      filter: blur(10px);
+      opacity: .55;
+    }
+
+    #r1 {
+      background: linear-gradient(180deg, var(--neon-a), #2fb7da);
+    }
+
+    #r1::before {
+      box-shadow: 0 0 30px 6px rgba(105, 210, 255, .12);
+      background: linear-gradient(180deg, rgba(105, 210, 255, .08), transparent);
+    }
+
+    #r2 {
+      background: linear-gradient(180deg, var(--neon-b), #4df0a8);
+    }
+
+    #r2::before {
+      box-shadow: 0 0 30px 6px rgba(138, 255, 157, .10);
+      background: linear-gradient(180deg, rgba(138, 255, 157, .06), transparent);
+    }
+
+    .robot .eyes {
+      position: absolute;
+      top: 16px;
+      display: flex;
+      gap: 8px;
+      transform: translateY(-2px);
+    }
+
+    .robot .eyes span {
+      width: 12px;
+      height: 12px;
+      background: #012;
+      border-radius: 50%;
+      box-shadow: inset 0 -3px 6px rgba(0, 0, 0, .6);
+    }
+
+    .robot .mouth {
+      position: absolute;
+      bottom: 10px;
+      width: 36px;
+      height: 8px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, .12);
+    }
+
+    .robot.turboOn {
+      box-shadow: 0 10px 40px rgba(255, 230, 60, .12), 0 0 28px rgba(255, 200, 60, .12);
+      transform: scale(1.02);
+    }
+
+    .moneda {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .4), inset 0 -6px 8px rgba(0, 0, 0, .2);
+      background: radial-gradient(circle at 30% 30%, #fff9c4, var(--coin));
+    }
+
+    .obs {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .6), inset 0 -8px 18px rgba(0, 0, 0, .18);
+      background: linear-gradient(180deg, #ff6b6b, #e53935);
+      transform: rotate(-6deg);
+    }
+
+    #panel {
+      width: 32%;
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .02);
+    }
+
+    h2 {
+      margin: 0 0 10px 0;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .timers {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .timerCard {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-align: center;
+      width: 100px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .45);
+    }
+
+    .timerCard small {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    #turno {
+      text-align: center;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    #bloques {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .bloque {
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      color: #012;
+      user-select: none;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
+      transition: transform .12s, box-shadow .12s;
+    }
+
+    .bloque:active {
+      transform: translateY(2px) scale(.995)
+    }
+
+    .bloque[data-cmd="right"] {
+      background: #ffd166;
+    }
+
+    .bloque[data-cmd="left"] {
+      background: #ffadad;
+    }
+
+    .bloque[data-cmd="up"],
+    .bloque[data-cmd="down"] {
+      background: #4dabf7;
+      color: white;
+    }
+
+    .bloque[data-cmd="turbo"] {
+      background: #7b61ff;
+      color: white;
+      opacity: .9;
+    }
+
+    .bloque[data-cmd="repeat"] {
+      background: #a0e7a0;
+    }
+
+    .bloque[data-cmd="if"] {
+      background: #f7b267;
+    }
+
+    #programa {
+      min-height: 120px;
+      padding: 10px;
+      border-radius: 10px;
+      background: var(--glass);
+      overflow: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: flex-start;
+      justify-content: flex-start;
+      border: 2px dashed rgba(255, 255, 255, 0.04);
+    }
+
+    .bloqueProg {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #ffd166;
+      color: #062126;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .45);
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button.primary {
+      background: #22c55e;
+      color: #021;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
+    }
+
+    button.ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .06);
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button[disabled] {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    #feedback {
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+      min-height: 70px;
+    }
+
+    #message {
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    #vars {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    #vars .stat {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    #ganador {
+      pointer-events: auto;
+    }
+
+    #ganador button {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      font-weight: 800;
+      background: #021;
+      color: #aaf;
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2000;
+    }
+
+    /* Botón volver al menú (copiado/adaptado para aislar estilos) */
+    .back-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 2100;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      background: #238636;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
+      transition: transform .12s, box-shadow .12s;
+    }
+    .back-btn:active { transform: translateY(2px) scale(.995); }
+  </style>
+</head>
+
+<body>
+  <button class="back-btn" onclick="volverMenu()">⬅ Volver al menú</button>
+  <div id="juego">
+    <div id="pista">
+      <div class="lane" id="lane1">
+        <div class="mark" style="left:10%; width:60%"></div>
+        <div class="robot" id="r1">
+          <div class="eyes"><span></span><span></span></div>
+          <div class="mouth"></div>
+        </div>
+        <div class="moneda" style="left:300px; top:40px"></div>
+        <div class="moneda" style="left:550px; top:150px"></div>
+        <div class="obs" style="left:400px; top:50px">X</div>
+        <div class="obs" style="left:700px; top:130px">!</div>
+        <div class="obs" style="left:880px; top:40px">⚠</div>
+      </div>
+      <div class="lane" id="lane2">
+        <div class="mark" style="left:12%; width:64%"></div>
+        <div class="robot" id="r2">
+          <div class="eyes"><span></span><span></span></div>
+          <div class="mouth"></div>
+        </div>
+        <div class="moneda" style="left:320px; top:100px"></div>
+        <div class="moneda" style="left:620px; top:60px"></div>
+        <div class="obs" style="left:450px; top:40px">X</div>
+        <div class="obs" style="left:740px; top:130px">!</div>
+        <div class="obs" style="left:960px; top:80px">⚠</div>
+      </div>
+    </div>
+    <div id="panel">
+      <h2>CARRERA ROBOTS</h2>
+      <div class="timers">
+        <div class="timerCard"><small>Jugador 1</small>
+          <div id="t1">0.0</div>
+        </div>
+        <div class="timerCard"><small>Jugador 2</small>
+          <div id="t2">0.0</div>
+        </div>
+      </div>
+      <div id="turno">Turno: Jugador 1</div>
+      <div id="bloques">
+        <div class="bloque" data-cmd="right">➡ Avanzar</div>
+        <div class="bloque" data-cmd="left">⬅ Retroceder</div>
+        <div class="bloque" data-cmd="up">⬆ Subir</div>
+        <div class="bloque" data-cmd="down">⬇ Bajar</div>
+        <div class="bloque" data-cmd="turbo" id="turboBtn">⚡ Turbo</div>
+        <div class="bloque" data-cmd="repeat">🔁 Repetir</div>
+        <div class="bloque" data-cmd="if">❓ Si obstáculo</div>
+      </div>
+      <div id="programa" title="Haz clic en bloque para añadir. clic en bloque del programa para borrarlo"></div>
+      <div class="controls">
+        <button class="primary" onclick="ejecutar()">▶ Ejecutar</button>
+        <button class="ghost" onclick="borrar()">🗑 Borrar</button>
+        <button class="ghost" onclick="location.reload()">🔁 Reiniciar</button>
+      </div>
+      <div id="feedback">
+        <div id="message">Recolecta una moneda para desbloquear Turbo</div>
+        <div id="stars"></div>
+      </div>
+      <div id="vars">
+        <div class="stat">Pasos: <span id="vPasos">0</span></div>
+        <div class="stat">Choques J1: <span id="c1">0</span></div>
+        <div class="stat">Choques J2: <span id="c2">0</span></div>
+      </div>
+    </div>
+  </div>
+  <canvas id="confettiCanvas"></canvas>
+  <script>
+    // (Script original conservado) 
+    let turno = 1; let inicio = { r1: { x: 20, y: 120 }, r2: { x: 20, y: 400 } }; let pos = JSON.parse(JSON.stringify(inicio)); let pasos = 0; let choques = { r1: 0, r2: 0 }; let turboActivo = { r1: false, r2: false }; let tiempo = { r1: 0.0, r2: 0.0 }; let relojActivo = { r1: false, r2: false }; let confettiRunning = false; actualizarTurbo(); updateTimersDisplay(); updateVars(); setInterval(() => { ["r1", "r2"].forEach(id => { if (relojActivo[id]) { tiempo[id] += 0.1; document.getElementById(id === "r1" ? "t1" : "t2").innerText = tiempo[id].toFixed(1); } }); }, 100);
+    // Bloques
+    document.querySelectorAll(".bloque").forEach(b => { b.onclick = () => { let idActual = turno === 1 ? "r1" : "r2"; if (b.dataset.cmd === "turbo" && !turboActivo[idActual]) return; let div = document.createElement("div"); div.className = "bloqueProg"; div.innerText = b.innerText; div.dataset.cmd = b.dataset.cmd; div.onclick = () => div.remove(); document.getElementById("programa").appendChild(div); }; });
+    function borrar() { document.getElementById("programa").innerHTML = ""; }
+    async function ejecutar() { if (document.getElementById("ganador")) return; let id = turno === 1 ? "r1" : "r2"; let robot = document.getElementById(id); let lane = document.getElementById(id === "r1" ? "lane1" : "lane2"); let bloques = [...document.querySelectorAll(".bloqueProg")]; relojActivo[id] = true; pasos = 0; updateVars(); for (let i = 0; i < bloques.length; i++) { let b = bloques[i]; b.classList.add("activo"); await sleep(200); if (b.dataset.cmd === "repeat") { if (bloques[i + 1]) { await mover(id, bloques[i + 1].dataset.cmd, robot, lane, 3); i++; } } else if (b.dataset.cmd === "if") { if (hayObstaculo(robot, lane) && bloques[i + 1]) { await mover(id, bloques[i + 1].dataset.cmd, robot, lane, 1); i++; } } else { await mover(id, b.dataset.cmd, robot, lane, 1); } b.classList.remove("activo"); if (colision(robot, lane)) { choques[id]++; updateVars(); reset(id); mensaje("Choque — vuelve a intentarlo", true); relojActivo[id] = false; return; } pasos++; updateVars(); } relojActivo[id] = false; evaluar(); cambiarTurno(); }
+    async function mover(id, cmd, robot, lane, n) { if (cmd === "turbo") { robot.classList.add("turboOn"); setTimeout(() => robot.classList.remove("turboOn"), 450); } for (let i = 0; i < n; i++) { if (cmd == "right") pos[id].x += 60; if (cmd == "left") pos[id].x -= 40; if (cmd == "up") pos[id].y -= 30; if (cmd == "down") pos[id].y += 30; if (cmd == "turbo") pos[id].x += 120; limitar(id, lane); robot.style.left = pos[id].x + "px"; robot.style.top = pos[id].y + "px"; detectarMoneda(id, lane); verificarMeta(id); await sleep(200); } }
+    function limitar(id, lane) { pos[id].x = Math.max(0, Math.min(lane.clientWidth - 90, pos[id].x)); pos[id].y = Math.max(10, Math.min(lane.clientHeight - 90, pos[id].y)); }
+    function detectarMoneda(id, lane) { let r = document.getElementById(id).getBoundingClientRect(); lane.querySelectorAll(".moneda").forEach(m => { if (m.style.display !== "none" && choca(r, m.getBoundingClientRect())) { m.style.display = "none"; if (!turboActivo[id]) { turboActivo[id] = true; mensaje("¡Turbo desbloqueado!", false); actualizarTurbo(); } } }); }
+    function actualizarTurbo() { let id = turno === 1 ? "r1" : "r2"; let t = document.getElementById("turboBtn"); if (turboActivo[id]) { t.style.opacity = 1; t.style.pointerEvents = "auto"; t.innerText = "⚡ Turbo"; } else { t.style.opacity = .4; t.style.pointerEvents = "none"; t.innerText = "⚡ Turbo (bloqueado)"; } }
+    function hayObstaculo(r, l) { return [...l.querySelectorAll(".obs")].some(o => choca(r.getBoundingClientRect(), o.getBoundingClientRect())); }
+    function colision(r, l) { return hayObstaculo(r, l); }
+    function choca(a, b) { return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom); }
+    function reset(id) { pos[id] = { ...inicio[id] }; const r = document.getElementById(id); r.style.display = "flex"; r.style.visibility = "visible"; r.style.opacity = "1"; r.style.left = pos[id].x + "px"; r.style.top = pos[id].y + "px"; r.offsetHeight; }
+    function evaluar() { let id = turno === 1 ? "r1" : "r2"; let estrellas = Math.max(1, 5 - choques[id] - Math.floor(pasos / 5)); document.getElementById("stars").innerText = "⭐".repeat(estrellas); mensaje(`Pasos: ${pasos} | Choques: ${choques[id]}`, false); }
+    function mensaje(text, warn) { const el = document.getElementById("message"); el.innerText = text; el.style.color = warn ? "#ffb0b0" : "#b9f6ca"; }
+    function updateVars() { document.getElementById("vPasos").innerText = pasos; document.getElementById("c1").innerText = choques.r1; document.getElementById("c2").innerText = choques.r2; }
+    function updateTimersDisplay() { document.getElementById("t1").innerText = tiempo.r1.toFixed(1); document.getElementById("t2").innerText = tiempo.r2.toFixed(1); }
+    function cambiarTurno() { turno = turno === 1 ? 2 : 1; document.getElementById("turno").innerText = "Turno: Jugador " + (turno === 1 ? 1 : 2); document.getElementById("programa").innerHTML = ""; actualizarTurbo(); const r1 = document.getElementById("r1"), r2 = document.getElementById("r2"); if (turno === 1) { r1.style.transform = "scale(1.02)"; r2.style.transform = "scale(1)"; } else { r2.style.transform = "scale(1.02)"; r1.style.transform = "scale(1)"; } }
+    function verificarMeta(id) { const lane = document.getElementById(id === "r1" ? "lane1" : "lane2"); const limite = lane.clientWidth - 110; if (pos[id].x >= limite) { mostrarGanador(id); } }
+    function mostrarGanador(id) { if (document.getElementById("ganador")) return; relojActivo.r1 = false; relojActivo.r2 = false; const nombre = id === "r1" ? "JUGADOR 1" : "JUGADOR 2"; const cartel = document.createElement("div"); cartel.id = "ganador"; cartel.innerHTML = `<div>🏆 GANADOR<br><strong>${nombre}</strong></div><div style="margin-top:12px"><button onclick="location.reload()">🔁 Jugar otra vez</button></div>`; document.body.appendChild(cartel); document.getElementById(id).classList.add("celebrar"); document.querySelectorAll(".bloque, .bloqueProg, button:not([onclick*='reload'])").forEach(e => { e.style.pointerEvents = "none"; e.style.opacity = ".35"; }); if (!confettiRunning) { confettiStart(); setTimeout(confettiStop, 4000); } }
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    const confettiCanvas = document.getElementById("confettiCanvas"); const confettiCtx = confettiCanvas.getContext("2d"); let confettiParticles = []; function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; } window.addEventListener("resize", resizeCanvas); resizeCanvas(); function confettiStart() { confettiRunning = true; confettiParticles = []; const colors = ["#ffcc00", "#ff66a3", "#7be6ff", "#7bffb9", "#ffd166"]; for (let i = 0; i < 120; i++) { confettiParticles.push({ x: Math.random() * confettiCanvas.width, y: -Math.random() * confettiCanvas.height, vx: (Math.random() - 0.5) * 6, vy: 2 + Math.random() * 6, size: 6 + Math.random() * 8, color: colors[Math.floor(Math.random() * colors.length)], rot: Math.random() * 360, vr: (Math.random() - 0.5) * 6 }); } requestAnimationFrame(confettiLoop); }
+    function confettiLoop() { confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height); for (const p of confettiParticles) { p.x += p.vx; p.y += p.vy; p.rot += p.vr; confettiCtx.save(); confettiCtx.translate(p.x, p.y); confettiCtx.rotate(p.rot * Math.PI / 180); confettiCtx.fillStyle = p.color; confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6); confettiCtx.restore(); } confettiParticles = confettiParticles.filter(p => p.y < confettiCanvas.height + 100); if (confettiRunning && confettiParticles.length) requestAnimationFrame(confettiLoop); }
+    function confettiStop() { confettiRunning = false; confettiParticles = []; confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height); }
+    updateTimersDisplay(); actualizarTurbo(); updateVars(); window.ejecutar = ejecutar; window.borrar = borrar;
+    function volverMenu(){
+      // Navega al menú principal de la app
+      // Si se sirve con Vite/React en la raíz, esto llevará a la página principal
+      window.location.href = "/";
+    }
+  </script>
+</body>
+
+</html>

@@ -14,6 +14,47 @@ background: #0d1117;
 color: #fff;
 font-family: system-ui, sans-serif;
 }
+
+/* Logo centrado con enlace */
+.center-logo-link {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  display: inline-block;
+  text-align: center;
+}
+
+.center-logo {
+  width: 160px;
+  height: auto;
+  opacity: 0.95;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.center-logo-link:hover .center-logo {
+  transform: scale(1.06);
+  opacity: 1;
+}
+
+/* Mini texto bajo el logo que cambia en hover */
+.center-logo-hint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #d6d9dd;
+  opacity: 0.9;
+}
+
+.center-logo-hint::after {
+  content: attr(data-default);
+}
+
+.center-logo-link:hover .center-logo-hint::after {
+  content: attr(data-hover);
+  color: #e9ecf0;
+}
 .menu-grid {
   /* Ocupa toda la ventana gráfica */
   width: 100vw;
@@ -59,6 +100,7 @@ font-family: system-ui, sans-serif;
   letter-spacing: 1px;
   font-family: "Science Gothic", system-ui, sans-serif;
   color: #ddd;
+  line-height: 0.9;
 }
 .white-title {
   color: #fff;
@@ -69,6 +111,9 @@ font-family: system-ui, sans-serif;
   margin: 0;
 }
 .back-btn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
   background: #238636;
   color: #fff;
   border: none;
