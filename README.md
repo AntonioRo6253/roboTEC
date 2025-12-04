@@ -1,6 +1,6 @@
 # roboTEC
 
-Versión: 1.1
+Versión: 1.2
 
 ## Resumen
 [![Feature Requests](https://img.shields.io/github/issues/AntonioRo6253/roboTEC/feature-request.svg)](https://github.com/AntonioRo6253/roboTEC/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc) 
@@ -15,6 +15,7 @@ roboTEC es una aplicación web construida con React y Vite orientada a experimen
 | ------- | ----------------- | ----------------------- | ---------------- | ---------------------- |
 | 1.0     | 29/11/2025        | Rafael                  | 30/11/2025       | Cristian               |
 | 1.1     | 01/12/2025        | Rodolfo , Cristian      | 04/12/2025       | Rafael , Xavier        |
+| 1.2     | 03/12/2025        | Cinthia , Xavier        | 04/12/2025       | Rafael , Rodolfo       |
 
 
 ## Cambios respecto a la versión anterior
@@ -22,6 +23,7 @@ roboTEC es una aplicación web construida con React y Vite orientada a experimen
 | ------- | -------------------------------------- |
 | 1.0     | Creación de estructura y documentación inicial |
 | 1.1     | Integración de métricas                |
+| 1.2     | Corrección gramatical                  |
 
 ## Tabla de contenido
 1. Introducción  
@@ -29,7 +31,7 @@ roboTEC es una aplicación web construida con React y Vite orientada a experimen
 3. Definiciones, siglas y abreviaturas  
 4. Aspectos Técnicos  
 5. Requisitos de Configuración  
-6. Proceso de Configuración o Despliegue  
+6. Proceso de Configuración y Despliegue  
 7. Ingreso / Uso Básico  
 8. Estructura del Proyecto  
 ---
@@ -70,7 +72,7 @@ Desarrollo iterativo ligero: pruebas rápidas en el navegador, refactor por comp
 - npm >= 9.x.  
 - Navegador moderno (Chrome, Firefox, Edge).  
 - RAM mínima: 2 GB (4 GB recomendada).  
-- Disco libre: ~300 MB para dependencias y caché.
+- Disco libre: ~200 MB para dependencias y caché.
 
 ### 6. Instalacion Local 
 #### Clonar el repositorio
