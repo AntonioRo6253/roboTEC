@@ -1,20 +1,27 @@
 # roboTEC
 
-Versión: 1.0
+Versión: 1.1
 
 ## Resumen
+[![Feature Requests](https://img.shields.io/github/issues/AntonioRo6253/roboTEC/feature-request.svg)](https://github.com/AntonioRo6253/roboTEC/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc) 
+[![Bugs](https://img.shields.io/github/issues/AntonioRo6253/roboTEC/bug.svg)](https://github.com/AntonioRo6253/roboTEC/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
+[![Issues](https://img.shields.io/github/issues/AntonioRo6253/roboTEC.svg)](https://github.com/AntonioRo6253/roboTEC/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/AntonioRo6253/roboTEC.svg)](https://github.com/AntonioRo6253/roboTEC/pulls)
 
 roboTEC es una aplicación web construida con React y Vite orientada a experimentar con interfaces y lógica de juegos/visualizaciones sencillas para un proyecto de informática/tecnología educativa. Este README cubre: información general, requisitos básicos, instalación, ejecución en entorno local, estructura del proyecto y consideraciones adicionales.
 
 ## Historial de revisión
 | Versión | Fecha elaboración | Responsable elaboración | Fecha aprobación | Responsable aprobación |
 | ------- | ----------------- | ----------------------- | ---------------- | ---------------------- |
-| 1.0     | 29/11/2025        | Rafael             | 30/11/2025               | Cristian                       |
+| 1.0     | 29/11/2025        | Rafael                  | 30/11/2025       | Cristian               |
+| 1.1     | 01/12/2025        | Rodolfo , Cristian      | 04/12/2025       | Rafael , Xavier        |
+
 
 ## Cambios respecto a la versión anterior
 | Versión | Modificación respecto versión anterior |
 | ------- | -------------------------------------- |
 | 1.0     | Creación de estructura y documentación inicial |
+| 1.1     | Integración de métricas                |
 
 ## Tabla de contenido
 1. Introducción  
